@@ -20,22 +20,13 @@ export default class Game extends Phaser.State {
   createPlayer(posX, posY) {
     var rectSize = { width: 50, height: 50 };
 
-    this.player = this.add.sprite(0, 0);
+    this.player = this.add.graphics(posX, posY);
 
-    // var rect = this.add.graphics(rectSize.x, rectSize.y);
-    var rect = this.add.graphics(this.width, this.height);
-    rect.beginFill(0xffffff, 1);
-    rect.x = 0;
-    rect.y = 0;
-    rect.drawRect(0, 0, rectSize.x, rectSize.y);
+    this.player.drawRect(posX, posY, rectSize.width, rectSize.height);
+    this.player.beginFill(0x00aaff, 1);
+    this.player.endFill();
 
-    this.player.width = rectSize.x;
-    this.player.height = rectSize.y;
-    this.player.addChild(rect);
-
-    this.physics.enable(this.player, Phaser.Physics.ARCADE);
-
-    window.graphics = rect;
+    this.game.physics.enable(this.player, Phaser.Physics.ARCADE);
   }
 
   createControls() {
@@ -48,11 +39,27 @@ export default class Game extends Phaser.State {
   }
 
   checkControls() {
+    function move(obj, dirAxis, velocity) {
+      console.log(dirAxis, ': ', obj[dirAxis]);
+      obj.body.velocity[dirAxis] += velocity;
+    }
+
+    // Up and down
     if (this.controls.up.isDown) {
-      this.player.body.velocity.y -= 5;
+      move(this.player, 'y', -5);
+    } else if (this.controls.down.isDown) {
+      move(this.player, 'y', 5);
+    }
+
+    // Left and right
+    if (this.controls.left.isDown) {
+      move(this.player, 'x', -5);
+    } else if (this.controls.right.isDown) {
+      move(this.player, 'x', 5);
     }
   }
 
-  render() {
-  }
+  // render() {
+  //   this.game.debug.geom(this.player, '#00aaff');
+  // }
 }
