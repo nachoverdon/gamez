@@ -1,5 +1,8 @@
-import random
 from dibujarSoga import dibujarSoga
+from seleccionarPalabra import seleccionarPalabra
+from quitarTildes import quitarTildes
+from printOculta import printOculta
+from devuelvePosiciones import devuelvePosiciones
 
 while True:
     def ahorcado(palabra):
@@ -7,13 +10,6 @@ while True:
         oculta = '_' * length
         intento = 0
         acierto = False
-
-        # Muestra en pantalla la cantidad de caracteres que tiene la palabra
-        def printOculta(texto):
-            temp = ''
-            for i in range(length):
-                temp += texto[i] + ' '
-            print(temp, ' (' + str(length) + ' letras)')
 
         dibujarSoga(intento)
         printOculta(oculta)
@@ -26,10 +22,10 @@ while True:
 
             letra = input('Dame una letra: ')
 
-            for i in range(length):
-                if palabra[i] == letra:
-                    oculta = oculta[0:i] + letra + oculta[i + 1:length]
-                    acierto = True
+            pos = devuelvePosiciones(palabra, letra)
+            for i in pos:
+                oculta = oculta[0:i] + letra + oculta[i + 1:length]
+                acierto = True
 
             if letra == palabra:
                 oculta = palabra
@@ -45,10 +41,11 @@ while True:
             acierto = False
 
         if oculta == palabra and intento < 6:
+            dibujarSoga(-1)
             print('Enhorabuena, has ganado. La palabra secreta era:', palabra)
 
-    palabras = ['cosa', 'teclado', 'perro']
-    ahorcado(palabras[random.randint(0, len(palabras) - 1)])
+    palabra = seleccionarPalabra()
+    ahorcado(quitarTildes(palabra))
 
     quit = input('Quit? (y/n)')
     if quit == 'y':
